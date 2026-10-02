@@ -1,0 +1,5 @@
+# Carpetas de compilación (generadas por CMake/Ninja)
+flash_debug/
+flash_release/
+flash_debug_copia_sdk/
+build/

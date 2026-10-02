@@ -1,0 +1,16 @@
+{
+  "version": "25.3",
+  "toolchainPath": "${userHome}/.mcuxpressotools/arm-gnu-toolchain-14.2.rel1-mingw-w64-x86_64-arm-none-eabi",
+  "linkedProjects": [],
+  "trustZoneType": "none",
+  "multicoreType": "none",
+  "projectType": "sdk-v2-repository",
+  "projectName": "frdmrw612_lwip_mqtt_freertos",
+  "sdk": {
+    "version": "26.9.0",
+    "path": "",
+    "boardId": "frdmrw612",
+    "deviceId": "RW612",
+    "coreId": "cm33"
+  }
+}
