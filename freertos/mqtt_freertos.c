@@ -85,6 +85,10 @@ static bool s_from_peer = false;
 /*! @brief Logical LED state. Only used on tcpip_thread. */
 static bool s_led_on = false;
 
+/*! @brief Payload of the incoming message ("ON"/"OFF"). Only used on tcpip_thread. */
+static char s_payload[8];
+static size_t s_payload_len = 0;
+
 /*******************************************************************************
  * Code
  ******************************************************************************/
@@ -159,7 +163,8 @@ static void mqtt_incoming_publish_cb(void *arg, const char *topic, u32_t tot_len
 {
     LWIP_UNUSED_ARG(arg);
 
-    s_from_peer = (strcmp(topic, TOPIC_PEER_BTN) == 0);
+    s_from_peer   = (strcmp(topic, TOPIC_PEER_BTN) == 0);
+    s_payload_len = 0;
 
     PRINTF("RX %s (%u bytes): \"", topic, tot_len);
 }
@@ -183,16 +188,35 @@ static void mqtt_incoming_data_cb(void *arg, const u8_t *data, u16_t len, u8_t f
         {
             PRINTF("\\x%02x", data[i]);
         }
+
+        if (s_payload_len < (sizeof(s_payload) - 1U))
+        {
+            s_payload[s_payload_len++] = (char)data[i];
+        }
     }
 
     if (flags & MQTT_DATA_FLAG_LAST)
     {
         PRINTF("\"\r\n");
+        s_payload[s_payload_len] = '\0';
 
-        /* Any message from the peer's button toggles our LED */
+        /* Our LED mirrors the peer's button: "ON" turns it on, "OFF" turns it off */
         if (s_from_peer)
         {
-            s_led_on = !s_led_on;
+            if (strcmp(s_payload, "ON") == 0)
+            {
+                s_led_on = true;
+            }
+            else if (strcmp(s_payload, "OFF") == 0)
+            {
+                s_led_on = false;
+            }
+            else
+            {
+                PRINTF("Unknown payload \"%s\", LED unchanged.\r\n", s_payload);
+                return;
+            }
+
             led_set(s_led_on);
             publish_led_state();
         }
