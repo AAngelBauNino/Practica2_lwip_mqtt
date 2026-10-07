@@ -16,6 +16,12 @@
 #define BOARD_ROLE_A 1 /* 1 = Tarjeta A, 0 = Tarjeta B */
 #endif
 
+/* Prueba con una sola tarjeta: el boton propio tambien controla el LED propio
+ * (y publica su estado). PONER EN 0 PARA LA DEMO CON DOS TARJETAS. */
+#ifndef APP_SELF_TEST
+#define APP_SELF_TEST 0
+#endif
+
 #ifndef USE_LOCAL_BROKER
 #define USE_LOCAL_BROKER 0 /* 0 = nube, 1 = LAN aislada */
 #endif

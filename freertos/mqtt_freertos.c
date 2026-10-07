@@ -317,6 +317,12 @@ static void publish_button(void *ctx)
     const char *payload = ((uintptr_t)ctx != 0U) ? "ON" : "OFF";
     err_t err;
 
+#if APP_SELF_TEST
+    /* Single-board test: our own button also drives our own LED */
+    s_led_on = ((uintptr_t)ctx != 0U);
+    led_set(s_led_on);
+#endif
+
     if (!mqtt_client_is_connected(mqtt_client))
     {
         PRINTF("Button pressed, but MQTT is not connected.\r\n");
@@ -332,6 +338,10 @@ static void publish_button(void *ctx)
     {
         PRINTF("Failed to publish to the topic \"%s\": %d.\r\n", TOPIC_MY_BTN, err);
     }
+
+#if APP_SELF_TEST
+    publish_led_state();
+#endif
 }
 
 /*!
@@ -394,7 +404,11 @@ static void app_thread(void *arg)
 
     PRINTF("Board role       : %s (client ID \"%s\")\r\n", MY_ID, MQTT_CLIENT_ID);
     PRINTF("Publishes        : %s, %s\r\n", TOPIC_MY_BTN, TOPIC_MY_LED);
-    PRINTF("Subscribes       : %s\r\n\r\n", TOPIC_PEER_BTN);
+    PRINTF("Subscribes       : %s\r\n", TOPIC_PEER_BTN);
+#if APP_SELF_TEST
+    PRINTF("*** APP_SELF_TEST: own button drives own LED ***\r\n");
+#endif
+    PRINTF("\r\n");
 
     /*
      * Check if we have an IP address or host name string configured.
