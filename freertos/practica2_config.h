@@ -22,24 +22,28 @@
 
 #define TEAM "equipo1"
 
+/* Debe coincidir con el "Prefijo de topicos" del dashboard.
+ * Dashboard vacio -> "" ; dashboard "equipo1" -> "equipo1/" */
+#define TOPIC_PREFIX TEAM "/"
+
 #if BOARD_ROLE_A
-#define MY_ID   "tarjeta_a"
-#define PEER_ID "tarjeta_b"
+#define MY_ID   "PC1"
+#define PEER_ID "PC2"
 #else
-#define MY_ID   "tarjeta_b"
-#define PEER_ID "tarjeta_a"
+#define MY_ID   "PC2"
+#define PEER_ID "PC1"
 #endif
 
-#define TOPIC_MY_BTN   TEAM "/" MY_ID "/boton"
-#define TOPIC_MY_LED   TEAM "/" MY_ID "/led"
-#define TOPIC_PEER_BTN TEAM "/" PEER_ID "/boton"
-#define MQTT_CLIENT_ID TEAM "_" MY_ID /* unico por tarjeta */
+#define TOPIC_MY_BTN   TOPIC_PREFIX "Push_Buttom_" MY_ID
+#define TOPIC_MY_LED   TOPIC_PREFIX "LED_" MY_ID
+#define TOPIC_PEER_BTN TOPIC_PREFIX "Push_Buttom_" PEER_ID
+#define MQTT_CLIENT_ID TEAM "_" MY_ID /* unico por tarjeta: equipo1_PC1 / equipo1_PC2 */
 
 #if USE_LOCAL_BROKER
 #define EXAMPLE_MQTT_SERVER_HOST "192.168.0.7" /* IP de la tablet (cambia segun la red) */
 #else
-#define EXAMPLE_MQTT_SERVER_HOST "broker.hivemq.com"
-#endif
+#define EXAMPLE_MQTT_SERVER_HOST "test.mosquitto.org" /* mismo broker que el dashboard (wss:8081) */
+#endif                         //"broker.hivemq.com"
 
 #define EXAMPLE_MQTT_SERVER_PORT 1883
 
@@ -54,7 +58,7 @@
 /* Nivel logico que enciende el LED. board.h define LED_BLUE_ON() como nivel alto;
  * si en la tarjeta el LED se ve invertido, cambiar a 0U. */
 #ifndef APP_LED_ON_LEVEL
-#define APP_LED_ON_LEVEL 1U
+#define APP_LED_ON_LEVEL 0U
 #endif
 
 /* Boton SW2: GPIO0_11, activo en bajo (pull-up) */
