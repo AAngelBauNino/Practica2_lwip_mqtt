@@ -20,6 +20,7 @@ mcux_add_source(
         lwip_mqtt_freertos.c
         mqtt_freertos.c
         mqtt_freertos.h
+        practica2_config.h
 )
 
 mcux_add_macro(
